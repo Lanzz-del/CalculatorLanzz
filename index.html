@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator Sederhana Lanzz</title>
+    <style>
+        /* CSS Sederhana untuk Tampilan */
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; }
+        .calculator { width: 320px; margin: 0 auto; padding: 25px; border: 1px solid #ccc; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); background-color: #fff; }
+        input[type="number"], select, button { margin: 8px 0; padding: 12px; width: 100%; box-sizing: border-box; border: 1px solid #ddd; border-radius: 6px; }
+        button { background-color: #007bff; color: white; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        #hasil { font-size: 1.8em; font-weight: bold; margin-top: 20px; color: #28a745; border: 1px solid #eee; padding: 10px; border-radius: 6px; background-color: #e9f5e9; }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <h1>Kalkulator Lanzz-Del</h1>
+
+    <input type="number" id="angka1" placeholder="Angka Pertama">
+    
+    <select id="operasi">
+        <option value="tambah">Tambah (+)</option>
+        <option value="kurang">Kurang (-)</option>
+        <option value="kali">Kali (*)</option>
+        <option value="bagi">Bagi (/)</option>
+    </select>
+    
+    <input type="number" id="angka2" placeholder="Angka Kedua">
+
+    <button onclick="hitung()">HITUNG HASIL</button>
+
+    <h2>Hasil:</h2>
+    <div id="hasil">0</div>
+</div>
+
+<script>
+    // Logika Kalkulator (Dikonversi dari Python ke JavaScript)
+
+    function tambah(a, b) { return a + b; }
+    function kurang(a, b) { return a - b; }
+    function kali(a, b) { return a * b; }
+    
+    function bagi(a, b) {
+        if (b === 0) {
+            return "Tidak bisa dibagi 0!"; 
+        }
+        return a / b;
+    }
+
+    function hitung() {
+        // 1. Ambil input dari elemen HTML
+        // parseFloat untuk memastikan input adalah angka, || 0 (atau 0) jika input kosong
+        let angka1 = parseFloat(document.getElementById('angka1').value) || 0; 
+        let angka2 = parseFloat(document.getElementById('angka2').value) || 0;
+        let operasi = document.getElementById('operasi').value;
+        let hasilTampil = document.getElementById('hasil');
+        let hasilPerhitungan;
+
+        // Cek apakah input valid (tidak perlu lagi karena sudah menggunakan || 0)
+        // if (isNaN(angka1) || isNaN(angka2)) {
+        //     hasilTampil.textContent = "Masukkan angka yang valid!";
+        //     return; 
+        // }
+
+
+        // 2. Pilih operasi dan hitung
+        switch (operasi) {
+            case 'tambah':
+                hasilPerhitungan = tambah(angka1, angka2);
+                break;
+            case 'kurang':
+                hasilPerhitungan = kurang(angka1, angka2);
+                break;
+            case 'kali':
+                hasilPerhitungan = kali(angka1, angka2);
+                break;
+            case 'bagi':
+                hasilPerhitungan = bagi(angka1, angka2);
+                break;
+        }
+
+        // 3. Tampilkan hasil
+        hasilTampil.textContent = hasilPerhitungan;
+    }
+</script>
+
+</body>
+</html>
