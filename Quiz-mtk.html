@@ -1,85 +1,175 @@
-<script>
-    let angka;
-    let eksponen;
-    let jawabanBenar;
-    let tipePertanyaan;
-    let skor = 0;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Matematika Aljabar & Eksponen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #282c34; 
+            color: #ffffff; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+        }
+        .container {
+            background-color: #383c42; 
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #61afef; 
+            margin-bottom: 20px;
+        }
+        #pertanyaan {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        #jawaban-input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #454950;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+        }
+        button {
+            background-color: #98c379; 
+            color: #282c34;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #7bb55f;
+        }
+        #hasil-teks {
+            margin-top: 20px;
+            min-height: 24px; /* Menjaga ruang agar tidak bergeser saat ada teks */
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .score {
+            margin-top: 15px;
+            font-size: 20px;
+            color: #e5c07b; 
+        }
+    </style>
+</head>
+<body>
 
-    function dapatkanAngkaAcak(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    <div class="container">
+        <h1>Quiz Matematika</h1>
 
-    function buatPertanyaanBaru() {
-        // 50% Eksponen, 50% Aljabar Sederhana
-        const types = ['eksponen', 'aljabar'];
-        tipePertanyaan = types[Math.floor(Math.random() * types.length)];
+        <p id="pertanyaan">Memuat pertanyaan...</p>
         
-        let pertanyaanTeks = '';
+        <input type="number" id="jawaban-input" placeholder="Masukkan angka jawaban">
         
-        if (tipePertanyaan === 'eksponen') {
-            // Contoh: 3² atau 5³
-            angka = dapatkanAngkaAcak(2, 6); // Angka 2 sampai 6
-            eksponen = dapatkanAngkaAcak(2, 4); // Pangkat 2, 3, atau 4
-            
-            // Hitung jawaban menggunakan Math.pow()
-            jawabanBenar = Math.pow(angka, eksponen);
-            
-            // Format pertanyaan dengan simbol eksponen (menggunakan Unicode ² ³ ⁴)
-            let simbolEksponen;
-            if (eksponen === 2) simbolEksponen = '²';
-            else if (eksponen === 3) simbolEksponen = '³';
-            else simbolEksponen = '⁴';
-            
-            pertanyaanTeks = `${angka}${simbolEksponen} = ?`;
+        <button onclick="cekJawaban()">Cek Jawaban</button>
+        <button onclick="buatPertanyaanBaru()">Lanjut / Skip</button>
+        
+        <p id="hasil-teks"></p>
+        
+        <p class="score">Skor: <span id="skor-teks">0</span></p>
 
-        } else if (tipePertanyaan === 'aljabar') {
-            // Contoh: x + 5 = 12 (mencari x)
-            let konstanta1 = dapatkanAngkaAcak(5, 15);
-            let konstanta2 = dapatkanAngkaAcak(1, 10);
+        <hr style="margin-top: 20px; border-color: #555;">
+        <p style="font-size: 14px;"><a href="index.html" style="color: #61afef; text-decoration: none;">&larr; Kembali ke Kalkulator</a></p>
+    </div>
+
+    <script>
+        let jawabanBenar;
+        let skor = 0;
+
+        function dapatkanAngkaAcak(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function buatPertanyaanBaru() {
+            // Pilih antara Eksponen atau Aljabar
+            const tipePertanyaan = Math.random() < 0.5 ? 'eksponen' : 'aljabar';
+            let pertanyaanTeks = '';
             
-            // Pilih operator secara acak
-            let operator = Math.random() < 0.5 ? '+' : '-';
-            
-            if (operator === '+') {
-                jawabanBenar = konstanta1 - konstanta2; // Jika x + B = A, maka x = A - B
-                pertanyaanTeks = `x + ${konstanta2} = ${konstanta1} (x = ?)`;
-            } else {
-                // Pastikan hasilnya positif
-                if (konstanta1 < konstanta2) {
-                    [konstanta1, konstanta2] = [konstanta2, konstanta1]; // Tukar
+            if (tipePertanyaan === 'eksponen') {
+                // Pertanyaan Eksponen: Contoh 3² = ?
+                let angka = dapatkanAngkaAcak(2, 6);
+                let eksponen = dapatkanAngkaAcak(2, 4);
+                
+                jawabanBenar = Math.pow(angka, eksponen);
+                
+                let simbolEksponen;
+                if (eksponen === 2) simbolEksponen = '²';
+                else if (eksponen === 3) simbolEksponen = '³';
+                else simbolEksponen = '⁴';
+                
+                pertanyaanTeks = `${angka}${simbolEksponen} = ?`;
+
+            } else if (tipePertanyaan === 'aljabar') {
+                // Pertanyaan Aljabar Sederhana: Contoh x + 5 = 12 (cari x)
+                let konstantaA = dapatkanAngkaAcak(10, 20); // Nilai di sisi kanan
+                let konstantaB = dapatkanAngkaAcak(1, 10); // Konstanta yang ditambahkan/dikurangi
+                
+                let operator = Math.random() < 0.5 ? '+' : '-';
+                
+                if (operator === '+') {
+                    // x + B = A  ==> x = A - B
+                    if (konstantaA < konstantaB) {
+                        [konstantaA, konstantaB] = [konstantaB, konstantaA]; // Tukar agar x positif/nol
+                    }
+                    jawabanBenar = konstantaA - konstantaB; 
+                    pertanyaanTeks = `x + ${konstantaB} = ${konstantaA} (x = ?)`;
+                } else {
+                    // x - B = A  ==> x = A + B
+                    jawabanBenar = konstantaA + konstantaB; 
+                    pertanyaanTeks = `x - ${konstantaB} = ${konstantaA} (x = ?)`;
                 }
-                jawabanBenar = konstanta1 + konstanta2; // Jika x - B = A, maka x = A + B
-                pertanyaanTeks = `x - ${konstanta2} = ${konstanta1} (x = ?)`;
             }
+
+            // Tampilkan di HTML
+            document.getElementById('pertanyaan').textContent = pertanyaanTeks;
+            document.getElementById('jawaban-input').value = ''; 
+            document.getElementById('hasil-teks').textContent = '';
         }
 
-        document.getElementById('pertanyaan').textContent = pertanyaanTeks;
-        document.getElementById('jawaban-input').value = ''; 
-        document.getElementById('hasil-teks').textContent = '';
-    }
+        function cekJawaban() {
+            const inputJawaban = document.getElementById('jawaban-input').value;
+            const jawabanPengguna = parseInt(inputJawaban);
+            const hasilTeks = document.getElementById('hasil-teks');
+            const skorTeks = document.getElementById('skor-teks');
 
-    function cekJawaban() {
-        const inputJawaban = document.getElementById('jawaban-input').value;
-        const jawabanPengguna = parseInt(inputJawaban);
-        const hasilTeks = document.getElementById('hasil-teks');
-        const skorTeks = document.getElementById('skor-teks');
+            // Validasi input
+            if (inputJawaban.trim() === '' || isNaN(jawabanPengguna)) {
+                hasilTeks.textContent = 'Masukkan angka yang valid!';
+                return;
+            }
 
-        if (inputJawaban === '' || isNaN(jawabanPengguna)) {
-            hasilTeks.textContent = 'Masukkan angka yang valid!';
-            return;
+            if (jawabanPengguna === jawabanBenar) {
+                hasilTeks.textContent = 'Jawaban BENAR! 🎉';
+                skor++;
+                // Lanjut ke pertanyaan baru
+                setTimeout(buatPertanyaanBaru, 1500); 
+            } else {
+                hasilTeks.textContent = `Jawaban SALAH. Jawaban yang benar adalah ${jawabanBenar}. 😔`;
+            }
+
+            skorTeks.textContent = skor;
         }
 
-        if (jawabanPengguna === jawabanBenar) {
-            hasilTeks.textContent = 'Jawaban BENAR! 🎉';
-            skor++;
-            setTimeout(buatPertanyaanBaru, 1500); 
-        } else {
-            hasilTeks.textContent = `Jawaban SALAH. Jawaban yang benar adalah ${jawabanBenar}. 😔`;
-        }
-
-        skorTeks.textContent = skor;
-    }
-
-    window.onload = buatPertanyaanBaru;
-
-</script>
+        // Panggil fungsi ini saat halaman dimuat
+        window.onload = buatPertanyaanBaru;
+    </script>
+    </body>
+</html>
