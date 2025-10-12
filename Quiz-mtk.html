@@ -1,0 +1,85 @@
+<script>
+    let angka;
+    let eksponen;
+    let jawabanBenar;
+    let tipePertanyaan;
+    let skor = 0;
+
+    function dapatkanAngkaAcak(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function buatPertanyaanBaru() {
+        // 50% Eksponen, 50% Aljabar Sederhana
+        const types = ['eksponen', 'aljabar'];
+        tipePertanyaan = types[Math.floor(Math.random() * types.length)];
+        
+        let pertanyaanTeks = '';
+        
+        if (tipePertanyaan === 'eksponen') {
+            // Contoh: 3² atau 5³
+            angka = dapatkanAngkaAcak(2, 6); // Angka 2 sampai 6
+            eksponen = dapatkanAngkaAcak(2, 4); // Pangkat 2, 3, atau 4
+            
+            // Hitung jawaban menggunakan Math.pow()
+            jawabanBenar = Math.pow(angka, eksponen);
+            
+            // Format pertanyaan dengan simbol eksponen (menggunakan Unicode ² ³ ⁴)
+            let simbolEksponen;
+            if (eksponen === 2) simbolEksponen = '²';
+            else if (eksponen === 3) simbolEksponen = '³';
+            else simbolEksponen = '⁴';
+            
+            pertanyaanTeks = `${angka}${simbolEksponen} = ?`;
+
+        } else if (tipePertanyaan === 'aljabar') {
+            // Contoh: x + 5 = 12 (mencari x)
+            let konstanta1 = dapatkanAngkaAcak(5, 15);
+            let konstanta2 = dapatkanAngkaAcak(1, 10);
+            
+            // Pilih operator secara acak
+            let operator = Math.random() < 0.5 ? '+' : '-';
+            
+            if (operator === '+') {
+                jawabanBenar = konstanta1 - konstanta2; // Jika x + B = A, maka x = A - B
+                pertanyaanTeks = `x + ${konstanta2} = ${konstanta1} (x = ?)`;
+            } else {
+                // Pastikan hasilnya positif
+                if (konstanta1 < konstanta2) {
+                    [konstanta1, konstanta2] = [konstanta2, konstanta1]; // Tukar
+                }
+                jawabanBenar = konstanta1 + konstanta2; // Jika x - B = A, maka x = A + B
+                pertanyaanTeks = `x - ${konstanta2} = ${konstanta1} (x = ?)`;
+            }
+        }
+
+        document.getElementById('pertanyaan').textContent = pertanyaanTeks;
+        document.getElementById('jawaban-input').value = ''; 
+        document.getElementById('hasil-teks').textContent = '';
+    }
+
+    function cekJawaban() {
+        const inputJawaban = document.getElementById('jawaban-input').value;
+        const jawabanPengguna = parseInt(inputJawaban);
+        const hasilTeks = document.getElementById('hasil-teks');
+        const skorTeks = document.getElementById('skor-teks');
+
+        if (inputJawaban === '' || isNaN(jawabanPengguna)) {
+            hasilTeks.textContent = 'Masukkan angka yang valid!';
+            return;
+        }
+
+        if (jawabanPengguna === jawabanBenar) {
+            hasilTeks.textContent = 'Jawaban BENAR! 🎉';
+            skor++;
+            setTimeout(buatPertanyaanBaru, 1500); 
+        } else {
+            hasilTeks.textContent = `Jawaban SALAH. Jawaban yang benar adalah ${jawabanBenar}. 😔`;
+        }
+
+        skorTeks.textContent = skor;
+    }
+
+    window.onload = buatPertanyaanBaru;
+
+</script>
