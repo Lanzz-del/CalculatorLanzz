@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Super-App - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">AI Super-App</h1>
+            <p class="text-gray-600">Multi-LLM Trading Assistant</p>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl p-6 text-white">
+                <h2 class="text-xl font-semibold mb-3">Features</h2>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex items-center">
+                        <span class="mr-2">✓</span> Multi-LLM Routing (GPT-4, Claude, Gemini, DeepSeek)
+                    </li>
+                    <li class="flex items-center">
+                        <span class="mr-2">✓</span> Real-time Market Data
+                    </li>
+                    <li class="flex items-center">
+                        <span class="mr-2">✓</span> Trading Analysis & Signals
+                    </li>
+                    <li class="flex items-center">
+                        <span class="mr-2">✓</span> Hybrid AI Mode
+                    </li>
+                </ul>
+            </div>
+
+            <div id="google-signin-button" class="flex justify-center"></div>
+
+            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"></div>
+        </div>
+
+        <div class="mt-8 text-center text-sm text-gray-500">
+            <p>Secure authentication with Google</p>
+            <p class="mt-2">Your API keys are encrypted and stored securely</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3001/api';
+        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Replace with your Google Client ID
+
+        function handleCredentialResponse(response) {
+            const idToken = response.credential;
+            
+            fetch(`${API_URL}/auth/google`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token: idToken })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    showError(data.error || 'Authentication failed');
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                showError('Failed to authenticate. Please try again.');
+            });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: handleCredentialResponse
+            });
+            
+            google.accounts.id.renderButton(
+                document.getElementById('google-signin-button'),
+                { 
+                    theme: 'outline', 
+                    size: 'large',
+                    width: 300,
+                    text: 'signin_with'
+                }
+            );
+        };
+    </script>
+</body>
+</html>
